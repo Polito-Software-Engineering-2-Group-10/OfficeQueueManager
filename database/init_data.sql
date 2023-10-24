@@ -1,11 +1,11 @@
 --counter
 insert into public.counter(counterid, typeamount, typeids) 
 values
-('01', 3, '{ABC}'),
-('02', 2, '{CD}'),
-('03', 2, '{EF}'),
-('04', 1, '{E}'),
-('05', 4, '{ABCD}');
+('01', 3, '{"A", "B", "C"}'),
+('02', 2, '{"C", "D"}'),
+('03', 2, '{"E", "F"}'),
+('04', 1, '{"E"}'),
+('05', 4, '{"A", "B", "C", "D"}');
 
 --servicetype
 insert into public.servicetype(typeid, typename, servicetime) 
