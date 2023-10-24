@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="OfficeQueueManager" id="Project-659" database="PostgreSQL" >
+	<comment><![CDATA[Design of the database needed for the OfficeQueueManager project]]></comment>
+	<schema name="officequeuemanager" >
+		<table name="counter" prior="tbl" >
+			<column name="counterid" type="varchar" length="3" jt="12" mandatory="y" >
+				<comment><![CDATA[ID of each counter]]></comment>
+			</column>
+			<column name="typeamount" type="integer" jt="4" >
+				<comment><![CDATA[Amount of types that each counter can serve.]]></comment>
+			</column>
+			<column name="typeids" prior="typeid" type="varchar[]" length="5" jt="2003" >
+				<comment><![CDATA[Amount of types that each counter can serve.]]></comment>
+			</column>
+			<index name="pk_counter" unique="PRIMARY_KEY" >
+				<column name="counterid" />
+			</index>
+		</table>
+		<table name="queue" prior="tbl" >
+			<column name="queueid" prior="typeid" type="serial" jt="4" mandatory="y" />
+			<column name="typeid" type="varchar" length="5" jt="12" />
+			<column name="queuelength" type="integer" jt="4" />
+			<index name="pk_queue" unique="PRIMARY_KEY" >
+				<column name="queueid" />
+			</index>
+			<fk name="fk_queue_servicetype" to_schema="officequeuemanager" to_table="servicetype" >
+				<fk_column name="typeid" pk="typeid" />
+			</fk>
+		</table>
+		<table name="servicetype" prior="tbl" spec="" >
+			<column name="typeid" type="varchar" length="5" jt="12" mandatory="y" />
+			<column name="typename" type="varchar" length="50" jt="12" />
+			<column name="servicetime" type="integer" jt="4" />
+			<index name="pk_servicetype" unique="PRIMARY_KEY" >
+				<column name="typeid" />
+			</index>
+		</table>
+		<table name="ticker" prior="tbl" >
+			<column name="ticketid" type="varchar" length="10" jt="12" mandatory="y" >
+				<comment><![CDATA[An unique waiting code for each client.]]></comment>
+			</column>
+			<column name="typeid" type="varchar" length="5" jt="12" >
+				<comment><![CDATA[ID of each service type.]]></comment>
+			</column>
+			<index name="pk_ticker" unique="PRIMARY_KEY" >
+				<column name="ticketid" />
+			</index>
+			<fk name="fk_ticker_servicetype" to_schema="officequeuemanager" to_table="servicetype" >
+				<fk_column name="typeid" pk="typeid" />
+			</fk>
+		</table>
+	</schema>
+	<layout name="Default Layout" id="Layout-1709" show_relation="columns" >
+		<entity schema="officequeuemanager" name="counter" color="C1D8EE" x="48" y="240" />
+		<entity schema="officequeuemanager" name="queue" color="C1D8EE" x="320" y="64" />
+		<entity schema="officequeuemanager" name="servicetype" color="C1D8EE" x="64" y="48" />
+		<entity schema="officequeuemanager" name="ticker" color="C1D8EE" x="352" y="256" />
+	</layout>
+</project>
