@@ -15,12 +15,8 @@ CREATE TABLE IF NOT EXISTS public.counter
 (
     counterid varchar(5) NOT NULL,
     typeamount integer,
-    typeid varchar(5),
-    CONSTRAINT counter_pkey PRIMARY KEY (counterid),
-    CONSTRAINT counter_typeid_fkey FOREIGN KEY (typeid)
-        REFERENCES public.servicetype (typeid)
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+    typeids varchar(5)[],
+    CONSTRAINT counter_pkey PRIMARY KEY (counterid)
 );
 ALTER TABLE IF EXISTS public.counter OWNER TO officequeuemanager;
 

@@ -9,15 +9,12 @@
 			<column name="typeamount" type="integer" jt="4" >
 				<comment><![CDATA[Amount of types that each counter can serve.]]></comment>
 			</column>
-			<column name="typeid" type="varchar" length="5" jt="12" >
+			<column name="typeids" prior="typeid" type="varchar[]" length="5" jt="2003" >
 				<comment><![CDATA[Amount of types that each counter can serve.]]></comment>
 			</column>
 			<index name="pk_counter" unique="PRIMARY_KEY" >
 				<column name="counterid" />
 			</index>
-			<fk name="fk_counter_servicetype" to_schema="officequeuemanager" to_table="servicetype" >
-				<fk_column name="typeid" pk="typeid" />
-			</fk>
 		</table>
 		<table name="queue" prior="tbl" >
 			<column name="queueid" prior="typeid" type="serial" jt="4" mandatory="y" />
