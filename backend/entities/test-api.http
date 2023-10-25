@@ -1,0 +1,18 @@
+## Retrieving all the films.
+GET http://localhost:3000/api/services HTTP/1.1
+###
+
+## Updates the queue after selecting the service.
+PUT http://localhost:3000/api/bookService/A HTTP/1.1
+
+###
+
+## Insert a new ticket and retrieve the number.
+POST http://localhost:3000/api/receiveTicketNumber/A HTTP/1.1
+
+###
+
+
+##Get the waiting time for a ticket.
+GET http://localhost:3000/api/getWaitingTime/:ticketid HTTP/1.1
+###

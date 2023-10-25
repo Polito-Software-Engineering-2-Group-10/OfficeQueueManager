@@ -50,7 +50,7 @@ class PsqlDb {
     /// Executes a query and expects any number of rows to be returned
     /// This function does not expect the last parameter to be an error message
     async executeQueryExpectAny(query, ...params) {
-        if (params.length < 1) throw new Error("Invalid number of parameters");
+       // if (params.length < 1) throw new Error("Invalid number of parameters");
         const result = await this.executeQuery(query, ...params);
         return result.rows;
     }

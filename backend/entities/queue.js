@@ -53,11 +53,12 @@ class QueueTable {
         return Queue.fromRow(row);
     }
     async updateQueue(queueid, queuelength) {
-        await this.db.executeQuery(
+        const row= await this.db.executeQuery(
             'UPDATE queue SET queuelength = $1 WHERE queueid = $2',
             queuelength,
             queueid
         );
+        return Queue.fromRow(row);
     }
 }
 

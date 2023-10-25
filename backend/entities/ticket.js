@@ -39,6 +39,13 @@ class TicketTable {
         );
         return rows.map(row => Ticket.fromRow(row));
     }
+    async InsertNewTicket(ticketid,typeid) {
+        const rows = await this.db.executeQueryExpectAny(
+            'INSERT INTO ticket(ticketid, typeid) VALUES ($1,$2)',
+            ticketid,typeid
+        );
+        return rows.map(row => Ticket.fromRow(row));
+    }
 }
 
 export { Ticket, TicketTable };
