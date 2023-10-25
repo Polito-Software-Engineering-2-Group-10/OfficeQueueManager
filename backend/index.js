@@ -3,6 +3,7 @@ import express, { json } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import { CounterTable, ServiceTypeTable, TicketTable, QueueTable } from './dbentities.js';
+import { psqlDriver } from './dbdriver.js';
 
 /// Initialize the tables, from here on we can use the table entities to interact with the database
 /// e.g. const counter = await counterTable.getCounterById('01');
@@ -23,8 +24,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 /// APIs here
-
-//console.log(await counterTable.getCounterById('01'));
 
 //1. Retrieve the list of all available services
 // GET /api/services
@@ -103,7 +102,7 @@ app.get('/api/getWaitingTime/:ticketid',
         const tr=(await serviceTypeTable.getServiceTypeById(req.params.ticketid.charAt(0))).servicetime;
         const nr=(await ticketTable.getTicketsByType(req.params.ticketid.charAt(0))).length;
         // understand how to get Ki
-        //understand how to get Si,r
+        // understand how to get Si,r
     }
         
 );
@@ -126,8 +125,6 @@ app.delete('/api/CancelPrenotation/:ticketid',
 
 
     }
-
-
 );
 
 
@@ -160,12 +157,31 @@ app.get('/api/counterService/:counterid',
 );
 
 
+// 9. getCounter
+// GET /api/counter/<counterid>
+app.get('/api/counter/:counterid',
+    async (req, res) => {
+        try {
+            const result = await counterTable.getCounterById(req.params.counterid);
+            res.json(result);
+        } catch (err) {
+            res.status(503).json({ error: `Database error during retrieving counter` });
+        }
+    }
+);
+
+// 10. getNextClient
+// GET /api/nextClient/<counterid>
+// select the first number from the longest queue among those corresponding to the service types the counter can handle
+app.get('/api/nextClient/:counterid',
+    async (req, res) => {
+
+    }
+);
 
 
-
-
-
-
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
 });
+
+export { server, app, psqlDriver };

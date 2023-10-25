@@ -63,6 +63,9 @@ class PsqlDb {
     async connect() {
         await this.dbObject.connect();
     }
+    async close() {
+        await this.dbObject.end();
+    }
 }
 
 class PsqlDriver {
@@ -84,6 +87,11 @@ class PsqlDriver {
         await db.connect();
         this.openDatabases[dbName] = db;
         return db;
+    }
+    async closeAll() {
+        for (const dbName in this.openDatabases) {
+            await this.openDatabases[dbName].close();
+        }
     }
 }
 
