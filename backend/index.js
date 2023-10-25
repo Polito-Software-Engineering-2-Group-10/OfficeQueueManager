@@ -72,6 +72,7 @@ app.put('/api/bookService/:typeid',
 //3.POST /api/receiveTicketNumber/<typeid>
 app.post('/api/receiveTicketNumber/:typeid',
     async (req, res) => {
+        console.log(req.params);
         const tickets = await ticketTable.getTicketsByType(req.params.typeid);
         const lastPlusOne = parseInt(tickets[tickets.length - 1].ticketid.slice(1)) + 1;
         const newTicket =
@@ -96,25 +97,23 @@ app.post('/api/receiveTicketNumber/:typeid',
 //Get the Waiting time for a ticket
 //4. GET /api/getWaitingTime/<ticketid>
 app.get('/api/getWaitingTime/:ticketid',
-    async (res, req) => {
-
-        console.log(5 * ((4 / 1 + (1 / 2)) + 1 / 2));
-
+    async (req, res) => {
+        const tr=(await serviceTypeTable.getServiceTypeById(req.params.ticketid.charAt(0))).servicetime;
+        const nr=(await ticketTable.getTicketsByType(req.params.ticketid.charAt(0))).length;
+        // understand how to get Ki
+        //understand how to get Si,r
     }
-
-
+        
 );
 
 
 //Get how much people there are before a user
 //5. GET /api/UsersBefore/<ticketid>,
 app.get('/api/UsersBefore/:ticketid',
-    async (res, req) => {
-
-
-    }
-
-
+    async (req, res) => {
+        const nPeople=(await ticketTable.getTicketsByType(req.params.ticketid.charAt(0))).length;
+        res.json({numberOfPeople: nPeople});
+    } 
 );
 
 

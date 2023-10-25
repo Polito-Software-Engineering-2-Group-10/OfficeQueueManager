@@ -14,5 +14,10 @@ POST http://localhost:3000/api/receiveTicketNumber/A HTTP/1.1
 
 
 ##Get the waiting time for a ticket.
-GET http://localhost:3000/api/getWaitingTime/:ticketid HTTP/1.1
+GET http://localhost:3000/api/getWaitingTime/A01 HTTP/1.1
+###
+
+
+##Get how many users are before a ticket
+GET http://localhost:3000/api/UsersBefore/A01 HTTP/1.1
 ###
