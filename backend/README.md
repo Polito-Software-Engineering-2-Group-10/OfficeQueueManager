@@ -29,7 +29,7 @@ To run the server, simply run `node index.js`.
 
 - GET `/api/services`:
 
-    - description: gets all available services now
+    - description: get all available services now
     - request body: *none*
     - response: `200` Success or `503` Database server error
     - response body: 
@@ -41,25 +41,64 @@ To run the server, simply run `node index.js`.
     }
   ```
 
-- PUT `/api/bookService/:typeid`:
-    - description: insert a new service and update the correspongding queue.
+- POST `/api/bookService/:typeid`:
+    - description: add a new service and update the correspongding queue.
     - request body: *none*
-    - response: `200` Success or `404` Data update error or `503` Database server error
+    - response: `200` Success or `404` Queue data update error or `503` Database server error
     - response body: 
     ```json
     {
+        "ticketinternalid" "ticketid" "typeid"
         "queueid" "typeid" "queuelength"
+        "waitingTime:" "minutes":"minutes","seconds":"seconds"
     }
     ```
 
-- POST `/api/receiveTicketNumber/:typeid`:
 
-    - description: Insert a new ticket and return the ticket infomation.
-    - request body:*none*
-    - response: `200` Success or `404` Data insert error or `503` Database server error
+- GET `/api/getWaitingTime/:ticketid`:
+
+    - description: Get the Waiting time for a ticket
+    - request body: *none*
+    - response: `200` Success
     - response body: 
+
     ```json
     {
-       "ticketid"
+        "minutes":"minutes","seconds":"seconds"
     }
-    ```
+  ```
+
+- GET `/api/UsersBefore/:ticketid`:
+
+    - description: Get how many people before a specific user
+    - request body: *none*
+    - response: `200` Success
+    - response body: 
+
+    ```json
+    {
+        "numberOfPeople":"npeople"
+    }
+  ```
+
+- 7
+- 8
+- 9
+
+- GET `/api/nextClient/:counterid`:
+
+    - description: Select the next serviced client in a specific counter
+    - request body: *none*
+    - response: `200` Success or `503` Database server error
+    - response body: 
+
+    ```json
+    {
+        "ticketinternalid" "ticketid" "typeid"
+    }
+  ```
+
+
+## Users Credentials
+
+- officequeuemanager, password:'officequeuemanager' (this user is an admin)
