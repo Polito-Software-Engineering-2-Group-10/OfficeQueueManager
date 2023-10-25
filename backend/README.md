@@ -23,4 +23,4 @@ To run the server, simply run `node index.js`.
 - Table `counter` - contains information of counter such as ID, type and amount of service it can offer: `counterid`, `typeamount`, `typeids`.
 - Table `servicetype` - contains ID, name of service and estimated time for processing of each service: `typeid`, `typename`, `servicetime`.
 - Table `ticket` - contains ID of ticket and ID of its service type: `ticketid`, `typeid`.
-- Table `queue` - contains ID of each service type and length of corresponding waiting queue `typeid`, `queuelength`.
+- Table `queue` - contains ID of each service type, number ID of queue and length of corresponding waiting queue: `queueid`, `typeid`, `queuelength`.
