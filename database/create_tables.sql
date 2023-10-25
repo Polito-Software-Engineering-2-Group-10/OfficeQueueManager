@@ -45,3 +45,4 @@ CREATE TABLE IF NOT EXISTS public.queue
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 );
+ALTER TABLE IF EXISTS public.queue OWNER TO officequeuemanager;
