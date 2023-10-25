@@ -129,6 +129,22 @@ app.delete('/api/CancelPrenotation/:ticketid',
 );
 
 
+//Counters
+
+//1. Retrieve the list of all available counters ID
+// GET /api/counters
+app.get('/api/counters',
+    async (req, res) => {
+        try {
+            const result = await counterTable.getAllCounters();
+            
+            res.json(result);
+        } catch (err) {
+            res.status(503).json({ error: `Database error during retrieving all services` });
+        }
+    }
+);
+
 
 
 

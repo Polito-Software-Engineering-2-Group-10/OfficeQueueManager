@@ -21,3 +21,8 @@ GET http://localhost:3000/api/getWaitingTime/A01 HTTP/1.1
 ##Get how many users are before a ticket
 GET http://localhost:3000/api/UsersBefore/A01 HTTP/1.1
 ###
+
+
+## Retrieving all the counters.
+GET http://localhost:3000/api/counters HTTP/1.1
+###
