@@ -36,8 +36,8 @@ To run the server, simply run `node index.js`.
 
     ```json
     {
-        name: `typeid`,
-        description: `typename`
+        "name": "typeid",
+        "description": "typename"
     }
   ```
 
@@ -48,7 +48,7 @@ To run the server, simply run `node index.js`.
     - response body: 
     ```json
     {
-        `queueid`,`typeid`,`queuelength`
+        "queueid" "typeid" "queuelength"
     }
     ```
 
@@ -60,6 +60,6 @@ To run the server, simply run `node index.js`.
     - response body: 
     ```json
     {
-       'ticketid'
+       "ticketid"
     }
     ```
