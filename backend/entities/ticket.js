@@ -2,7 +2,8 @@
 import { psqlDriver } from '../dbdriver.js';
 
 class Ticket {
-    constructor(ticketid, typeid) {
+    constructor(internalid, ticketid, typeid) {
+        this.internalid = internalid
         this.ticketid = ticketid;
         this.typeid = typeid;
     }
@@ -10,7 +11,7 @@ class Ticket {
         return `Ticket ${this.ticketid} of type ${this.typeid}`;
     }
     static fromRow(row) {
-        return new Ticket(row.ticketid, row.typeid);
+        return new Ticket(row.ticketinternalid, row.ticketid, row.typeid);
     }
 }
 
@@ -40,11 +41,20 @@ class TicketTable {
         return rows.map(row => Ticket.fromRow(row));
     }
     async InsertNewTicket(ticketid,typeid) {
-        const rows = await this.db.executeQueryExpectAny(
-            'INSERT INTO ticket(ticketid, typeid) VALUES ($1,$2)',
-            ticketid,typeid
+        const row = await this.db.executeQueryExpectOne(
+            'INSERT INTO ticket(ticketid, typeid) VALUES ($1,$2) RETURNING *',
+            ticketid,typeid,
+            'Ticket not inserted'
         );
-        return rows.map(row => Ticket.fromRow(row));
+        return Ticket.fromRow(row);
+    }
+    async extractFirstTicket(typeid) {
+        const row = await this.db.executeQueryExpectOne(
+            'DELETE FROM ticket WHERE ticketid = (SELECT ticketid FROM ticket WHERE typeid = $1 ORDER BY ticketinternalid ASC LIMIT 1) RETURNING *',
+            typeid,
+            'Ticket not deleted'
+        );
+        return Ticket.fromRow(row);
     }
 }
 

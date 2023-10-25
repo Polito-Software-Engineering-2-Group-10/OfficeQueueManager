@@ -3,11 +3,7 @@ GET http://localhost:3000/api/services HTTP/1.1
 ###
 
 ## Updates the queue after selecting the service.
-PUT http://localhost:3000/api/bookService/A HTTP/1.1
-###
-
-## Insert a new ticket and retrieve the number.
-POST http://localhost:3000/api/receiveTicketNumber/A HTTP/1.1
+POST http://localhost:3000/api/bookService/B HTTP/1.1
 ###
 
 
@@ -31,4 +27,8 @@ GET http://localhost:3000/api/counter/01 HTTP/1.1
 
 ## Retrieving all the counters.
 GET http://localhost:3000/api/counterService/01 HTTP/1.1
+###
+
+### Get next client
+GET http://localhost:3000/api/nextClient/01 HTTP/1.1
 ###

@@ -33,9 +33,17 @@ class QueueTable {
         return Queue.fromRow(row);
     }
     async getQueueByType(typeid) {
-        const rows = await this.db.executeQueryExpectAny(
+        const row = await this.db.executeQueryExpectOne(
             'SELECT * FROM queue WHERE typeid = $1',
-            typeid
+            typeid,
+            `Queue with type ${typeid} not found`
+        );
+        return Queue.fromRow(row);
+    }
+    async getQueuesByType(typeids) {
+        const rows = await this.db.executeQueryExpectAny(
+            'SELECT * FROM queue WHERE typeid = ANY($1)',
+            typeids
         );
         return rows.map(row => Queue.fromRow(row));
     }
@@ -48,15 +56,26 @@ class QueueTable {
     }
     async getShortestQueue() {
         const row = await this.db.executeQueryExpectOne(
-            'SELECT * FROM queue ORDER BY queuelength ASC LIMIT 1'
+            'SELECT * FROM queue ORDER BY queuelength ASC LIMIT 1',
+            'No queues found'
         );
         return Queue.fromRow(row);
     }
     async updateQueue(queueid, queuelength) {
-        const row= await this.db.executeQuery(
-            'UPDATE queue SET queuelength = $1 WHERE queueid = $2',
+        const row = await this.db.executeQueryExpectOne(
+            'UPDATE queue SET queuelength = $1 WHERE queueid = $2 RETURNING *',
             queuelength,
-            queueid
+            queueid,
+            'Queue not found'
+        );
+        return Queue.fromRow(row);
+    }
+    async updateQueueDiff(queueid, diff) {
+        const row = await this.db.executeQueryExpectOne(
+            'UPDATE queue SET queuelength = queuelength + $1 WHERE queueid = $2 RETURNING *',
+            diff,
+            queueid,
+            'Queue not found'
         );
         return Queue.fromRow(row);
     }
