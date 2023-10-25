@@ -23,9 +23,10 @@ ALTER TABLE IF EXISTS public.counter OWNER TO officequeuemanager;
 -- ticket
 CREATE TABLE IF NOT EXISTS public.ticket
 (
+    ticketinternalid serial NOT NULL,
     ticketid varchar(10) NOT NULL,
     typeid varchar(5),
-    CONSTRAINT ticket_pkey PRIMARY KEY (ticketid),
+    CONSTRAINT ticket_pkey PRIMARY KEY (ticketinternalid, ticketid),
     CONSTRAINT ticket_typeid_fkey FOREIGN KEY (typeid)
         REFERENCES public.servicetype (typeid)
         ON UPDATE NO ACTION
