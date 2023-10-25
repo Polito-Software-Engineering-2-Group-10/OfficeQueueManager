@@ -22,6 +22,8 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+/// APIs here
+
 //console.log(await counterTable.getCounterById('01'));
 
 //1. Retrieve the list of all available services
@@ -130,17 +132,29 @@ app.delete('/api/CancelPrenotation/:ticketid',
 
 
 //Counters
-
-//1. Retrieve the list of all available counters ID
-// GET /api/counters
-app.get('/api/counters',
+//7.Get list of all counters
+// GET /api/counters/
+app.get('/api/counters/',
     async (req, res) => {
         try {
-            const result = await counterTable.getAllCounters();
-            
+            const result =await counterTable.getAllCounters();
             res.json(result);
         } catch (err) {
-            res.status(503).json({ error: `Database error during retrieving all services` });
+            res.status(503).json({ error: `Database error during retrieving all counters` });
+        }
+    }
+);
+
+
+//8.Get list of services from a specific counter
+// GET /api/countersService/<counterid>
+app.get('/api/counterService/:counterid',
+    async (req, res) => {
+        try {
+            const result =(await counterTable.getCounterById(req.params.counterid)).typeids;
+            res.json(result);
+        } catch (err) {
+            res.status(503).json({ error: `Database error during retrieving counter services` });
         }
     }
 );
@@ -150,7 +164,7 @@ app.get('/api/counters',
 
 
 
-/// APIs here
+
 
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
