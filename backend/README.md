@@ -23,4 +23,43 @@ To run the server, simply run `node index.js`.
 - Table `counter` - contains information of counter such as ID, type and amount of service it can offer: `counterid`, `typeamount`, `typeids`.
 - Table `servicetype` - contains ID, name of service and estimated time for processing of each service: `typeid`, `typename`, `servicetime`.
 - Table `ticket` - contains ID of ticket and ID of its service type: `ticketid`, `typeid`.
-- Table `queue` - contains ID of each service type and length of corresponding waiting queue `typeid`, `queuelength`.
+- Table `queue` - contains ID of each service type, number ID of queue and length of corresponding waiting queue: `queueid`, `typeid`, `queuelength`.
+
+## API Server
+
+- GET `/api/services`:
+
+    - description: gets all available services now
+    - request body: *none*
+    - response: `200` Success or `503` Database server error
+    - response body: 
+
+    ```json
+    {
+        "name": "typeid",
+        "description": "typename"
+    }
+  ```
+
+- PUT `/api/bookService/:typeid`:
+    - description: insert a new service and update the correspongding queue.
+    - request body: *none*
+    - response: `200` Success or `404` Data update error or `503` Database server error
+    - response body: 
+    ```json
+    {
+        "queueid" "typeid" "queuelength"
+    }
+    ```
+
+- POST `/api/receiveTicketNumber/:typeid`:
+
+    - description: Insert a new ticket and return the ticket infomation.
+    - request body:*none*
+    - response: `200` Success or `404` Data insert error or `503` Database server error
+    - response body: 
+    ```json
+    {
+       "ticketid"
+    }
+    ```
