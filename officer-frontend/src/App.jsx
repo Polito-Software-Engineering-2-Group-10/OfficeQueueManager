@@ -1,20 +1,29 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import 'bootstrap/dist/css/bootstrap.min.css';
-//import './App.css'
+import { React, useState, useEffect } from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import OfficerPage from './pages/OfficerPage.jsx'
-
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import API from './API.jsx';
 
 
 function App() {
+
+  //list of all counters to display in the dropdown list
+  const [counters, setCounters] = useState([]);
+
+  useEffect( () => {
+    API.getAllCounters()
+      .then((counters) => {
+        setCounters(counters);
+      })    
+      .catch((err) => console.log(err));
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/*' element={<OfficerPage/>}></Route>
-        <Route path='/officer' element={<OfficerPage/>}></Route>
+        <Route path='/*' element={<OfficerPage counters={counters}/>}></Route>
+        <Route path='/officer' element={<OfficerPage counters={counters}/>}></Route>
       </Routes>
     </BrowserRouter>
   )
