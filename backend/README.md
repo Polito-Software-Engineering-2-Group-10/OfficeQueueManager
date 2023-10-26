@@ -5,7 +5,7 @@ Simply running `npm install` should install all the dependencies.
 It is required to have a running PostgreSQL server with the required database setup. The guide on how to setup the database can be found in the `database/` folder of this repository.
 
 ## Running the server
-To run the server, simply run `node index.js`.
+To run the server, simply run `node index.js` or `npm run dev`.
 
 ## Structure
 ```
