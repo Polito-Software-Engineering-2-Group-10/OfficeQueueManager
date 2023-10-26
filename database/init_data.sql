@@ -21,11 +21,11 @@ values
 insert into public.queue(typeid, queuelength) 
 values
 ('A', 2),
-('B', 302),
-('C', 14),
+('B', 2),
+('C', 1),
 ('D', 1),
-('E', 8),
-('F', 36);
+('E', 1),
+('F', 1);
 
 --ticket
 insert into public.ticket(ticketid, typeid) 

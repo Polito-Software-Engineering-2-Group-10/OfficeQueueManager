@@ -1,0 +1,33 @@
+{
+  "name": "office_queue_manager_server",
+  "version": "1.0.0",
+  "description": "A server for the OfficeQueueManager project",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Polito-Software-Engineering-2-Group-10/OfficeQueueManager.git"
+  },
+  "author": "Alessio, Salvatore",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Polito-Software-Engineering-2-Group-10/OfficeQueueManager/issues"
+  },
+  "homepage": "https://github.com/Polito-Software-Engineering-2-Group-10/OfficeQueueManager#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "morgan": "^1.10.0",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.3"
+  }
+}
