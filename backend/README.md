@@ -59,7 +59,7 @@ To run the server, simply run `node index.js` or `npm run dev`.
 
     - description: Get the Waiting time for a ticket
     - request body: *none*
-    - response: `200` Success
+    - response: `200` Success or `404` Ticket id finding error
     - response body: 
 
     ```json
@@ -72,7 +72,7 @@ To run the server, simply run `node index.js` or `npm run dev`.
 
     - description: Get how many people before a specific user
     - request body: *none*
-    - response: `200` Success
+    - response: `200` Success or `404` Get result error
     - response body: 
 
     ```json
