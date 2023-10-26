@@ -5,7 +5,7 @@ Simply running `npm install` should install all the dependencies.
 It is required to have a running PostgreSQL server with the required database setup. The guide on how to setup the database can be found in the `database/` folder of this repository.
 
 ## Running the server
-To run the server, simply run `node index.js`.
+To run the server, simply run `node index.js` or `npm run dev`.
 
 ## Structure
 ```
@@ -35,22 +35,30 @@ To run the server, simply run `node index.js`.
     - response body: 
 
     ```json
-    {
+    [{
         "name": "typeid",
         "description": "typename"
-    }
+    }]
   ```
 
 - POST `/api/bookService/:typeid`:
     - description: add a new service and update the correspongding queue.
     - request body: *none*
-    - response: `200` Success or `404` Queue data update error or `503` Database server error
+    - response: `200` Success
+     or `503` Database server error
     - response body: 
     ```json
-    {
-        "ticketinternalid" "ticketid" "typeid"
-        "queueid" "typeid" "queuelength"
-        "waitingTime:" "minutes":"minutes","seconds":"seconds"
+    
+        {
+        "internalid": "id",
+        "ticketid": "ticketid",
+        "typeid": "typeid",
+        "queueid": "queueid",
+        "queuelength": "queuelength",
+        "waitingTime": {
+          "minutes": "minutes",
+          "seconds": "seconds"
+        }
     }
     ```
 
@@ -59,7 +67,7 @@ To run the server, simply run `node index.js`.
 
     - description: Get the Waiting time for a ticket
     - request body: *none*
-    - response: `200` Success
+    - response: `200` Success or `404` Ticket id finding error
     - response body: 
 
     ```json
@@ -72,7 +80,7 @@ To run the server, simply run `node index.js`.
 
     - description: Get how many people before a specific user
     - request body: *none*
-    - response: `200` Success
+    - response: `200` Success `404` for ticketid not found
     - response body: 
 
     ```json
@@ -81,20 +89,76 @@ To run the server, simply run `node index.js`.
     }
   ```
 
-- 7
-- 8
-- 9
+  - GET `/api/counters`:
+
+    - description: Get all available counters
+    - request body: *none*
+    - response: `200` Success `503` for Database error
+    - response body: 
+
+    ```json
+     [
+        {
+    "counterid": "counterid",
+    "typeamount": "typeamount",
+    "typeids": [
+      "A",
+      "B",
+      "C"
+        ]
+    }
+    ]
+    ```
+
+
+    
+- GET `/api/counterService/:counterid`:
+
+    - description: Get counter services based on the counter id
+    - request body: *none*
+    - response: `200` Success or `404` for counter not found
+    - response body: 
+
+    ```json
+     [
+  "A",
+  "B",
+  "C"
+    ]
+    ```
+
+  - GET `/api/counter/:counterid`:
+
+    - description: Get counter info based on the counter id
+    - request body: *none*
+    - response: `200` Success or `404` for counter not found
+    - response body: 
+
+    ```json
+    {
+  "counterid": "counterid",
+  "typeamount": "typeamount",
+  "typeids": [
+    "A",
+    "B",
+    "C"
+  ]
+    }
+   
+    ```
 
 - GET `/api/nextClient/:counterid`:
 
     - description: Select the next serviced client in a specific counter
     - request body: *none*
-    - response: `200` Success or `503` Database server error
+    - response: `200` Success, or `404` for ticket not found  `503` Database server error
     - response body: 
 
     ```json
     {
-        "ticketinternalid" "ticketid" "typeid"
+       "internalid": "internalid",
+        "ticketid": "ticketid",
+        "typeid": "typeid"
     }
   ```
 
