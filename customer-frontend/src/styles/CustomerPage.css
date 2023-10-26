@@ -1,5 +1,26 @@
 .CustomerPage {
     padding: 2em;
+    height: 100vh;
+}
+
+.TicketPage {
+    padding: 2em;
+    height: 100vh;
+}
+
+.CenterContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: top;
+    gap: 1em;
+}
+
+.BigButton {
+    min-width: 100px;
+    min-height: 50px;
+    font-size: 20px !important;
+    margin-bottom: 5px;
 }
 
 #submitButton {
