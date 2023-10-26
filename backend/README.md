@@ -35,22 +35,30 @@ To run the server, simply run `node index.js` or `npm run dev`.
     - response body: 
 
     ```json
-    {
+    [{
         "name": "typeid",
         "description": "typename"
-    }
+    }]
   ```
 
 - POST `/api/bookService/:typeid`:
     - description: add a new service and update the correspongding queue.
     - request body: *none*
-    - response: `200` Success or `404` Queue data update error or `503` Database server error
+    - response: `200` Success
+     or `503` Database server error
     - response body: 
     ```json
-    {
-        "ticketinternalid" "ticketid" "typeid"
-        "queueid" "typeid" "queuelength"
-        "waitingTime:" "minutes":"minutes","seconds":"seconds"
+    
+        {
+        "internalid": "id",
+        "ticketid": "ticketid",
+        "typeid": "typeid",
+        "queueid": "queueid",
+        "queuelength": "queuelength",
+        "waitingTime": {
+          "minutes": "minutes",
+          "seconds": "seconds"
+        }
     }
     ```
 
@@ -72,7 +80,7 @@ To run the server, simply run `node index.js` or `npm run dev`.
 
     - description: Get how many people before a specific user
     - request body: *none*
-    - response: `200` Success or `404` Get result error
+    - response: `200` Success `404` for ticketid not found
     - response body: 
 
     ```json
@@ -81,20 +89,76 @@ To run the server, simply run `node index.js` or `npm run dev`.
     }
   ```
 
-- 7
-- 8
-- 9
+  - GET `/api/counters`:
+
+    - description: Get all available counters
+    - request body: *none*
+    - response: `200` Success `503` for Database error
+    - response body: 
+
+    ```json
+     [
+        {
+    "counterid": "counterid",
+    "typeamount": "typeamount",
+    "typeids": [
+      "A",
+      "B",
+      "C"
+        ]
+    }
+    ]
+    ```
+
+
+    
+- GET `/api/counterService/:counterid`:
+
+    - description: Get counter services based on the counter id
+    - request body: *none*
+    - response: `200` Success or `404` for counter not found
+    - response body: 
+
+    ```json
+     [
+  "A",
+  "B",
+  "C"
+    ]
+    ```
+
+  - GET `/api/counter/:counterid`:
+
+    - description: Get counter info based on the counter id
+    - request body: *none*
+    - response: `200` Success or `404` for counter not found
+    - response body: 
+
+    ```json
+    {
+  "counterid": "counterid",
+  "typeamount": "typeamount",
+  "typeids": [
+    "A",
+    "B",
+    "C"
+  ]
+    }
+   
+    ```
 
 - GET `/api/nextClient/:counterid`:
 
     - description: Select the next serviced client in a specific counter
     - request body: *none*
-    - response: `200` Success or `503` Database server error
+    - response: `200` Success, or `404` for ticket not found  `503` Database server error
     - response body: 
 
     ```json
     {
-        "ticketinternalid" "ticketid" "typeid"
+       "internalid": "internalid",
+        "ticketid": "ticketid",
+        "typeid": "typeid"
     }
   ```
 
