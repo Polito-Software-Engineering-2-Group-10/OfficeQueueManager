@@ -36,30 +36,37 @@ describe('get api/services', () => {
 });
 
 describe('put /api/bookService/:typeid', () => {
-    test('Should create a new ticket given a type ID and return the newly created data', async () => {
-
-    });
 
     test('Should throw a 404 error when the ticket creation fails', async () => {
-
+        const typeId = 'A';
+        const queueData = {
+            queueid: 1,
+            typeid: "A",
+            queuelength: 2
+        }
+        jest.spyOn(queueTable, 'getQueueByType').mockImplementationOnce(() => queueData);
+        jest.spyOn(queueTable, 'updateQueueDiff').mockImplementationOnce(() => {
+            throw new Error("Error updating queue").message(`Database error during the booking of service with type ${typeId}: Error updating queue`);
+        });
+        const response = await request(app).post(`/api/bookService/${typeId}`);
+        expect(response.status).toBe(503);
     });
 
     test('Should throw a 503 error if a database problem occurs', async () => {
+        const queueData = {
+            queueid: 1,
+            typeid: "A",
+            queuelength: 2
+        }
+        jest.spyOn(queueTable, 'getQueueByType').mockImplementationOnce(() => queueData);
+        jest.spyOn(queueTable, 'updateQueueDiff').mockImplementationOnce(() => {
+            throw new Error();
+        });
 
-    });
-});
+        const response = await request(app)
+            .post('/api/bookService/A')
 
-describe('post /api/receiveTicketNumber/:typeid', () => {
-    test('Should create a new ticket and return 200 OK', async () => {
-
-    });
-
-    test('Should return 404 when type is not found', async () => {
-
-    });
-
-    test('Should throw a 503 error if a database problem occurs', async () => {
-
+        expect(response.status).toBe(503);
     });
 });
 
@@ -102,11 +109,11 @@ describe('get /api/counters/', () => {
 
     test("Should throw a 503 error if a server-side error occurs", async () => {
         jest.spyOn(counterTable, "getAllCounters").mockImplementationOnce(() => {
-            throw new Error();
+            throw new Error("DB Failure");
         });
         const response = await request(app).get("/api/counters");
         expect(response.status).toBe(503);
-        expect(response.body).toEqual({ error: "Database error during retrieving all counters" });
+        expect(response.body).toEqual({ error: "Database error during retrieving all counters: Error: DB Failure" });
     })
 });
 
@@ -120,13 +127,13 @@ describe('get /api/counterService/:counterid', () => {
         expect(response.body).toEqual(ServicesByCounter);
     })
 
-    test("Should throw a 503 error if a server-side error occurs", async () => {
+    test("Should throw a 404 error if a counter isn't found", async () => {
         jest.spyOn(counterTable, "getCounterById").mockImplementationOnce(() => {
-            throw new Error();
+            throw new Error("Counter not found");
         });
         const response = await request(app).get("/api/counterService/01");
-        expect(response.status).toBe(503);
-        expect(response.body).toEqual({ error: "Database error during retrieving counter services" });
+        expect(response.status).toBe(404);
+        expect(response.body).toEqual({ error: "Couldn't get service for counter 01: Error: Counter not found" });
     })
 });
 
@@ -144,20 +151,43 @@ describe('get /api/counter/:counterid', () => {
         expect(response.body).toEqual(counterData);
     });
 
-    test('Should throw a 503 error if a database error occurs', async () => {
+    test('Should throw a 404 error if the id is invalid', async () => {
         const counterId = 'invalid_id';
         jest.spyOn(counterTable, 'getCounterById').mockImplementationOnce(() => {
-            throw new Error();
+            throw new Error("Invalid id");
         });
         const response = await request(app).get(`/api/counter/${counterId}`);
-        expect(response.status).toBe(503);
-        expect(response.body).toEqual({ error: `Database error during retrieving counter` });
+        expect(response.status).toBe(404);
+        expect(response.body).toEqual({ error: `Couldn't get counter ${counterId}: Error: Invalid id` });
     });
 });
 
 describe('get /api/nextClient/:counterid', () => {
     test('Should extract and return the next client for a valid counter', async () => {
+        const counterId = '01';
+        const counterData = {
+            counterid: "01",
+            typeamount: 3,
+            typeids: ["A", "B", "C"]
+        };
+        const queuesData = [{
+            queueid: 1,
+            typeid: "A",
+            queuelength: 2
+        }];
+        const ticketData = {
+            ticketid: "A01",
+            typeid: "A"
+        };
+        jest.spyOn(counterTable, 'getCounterById').mockResolvedValue(counterData);
+        jest.spyOn(queueTable, 'getQueuesByType').mockResolvedValue(queuesData);
+        jest.spyOn(ticketTable, 'extractFirstTicket').mockResolvedValue(ticketData);
+        jest.spyOn(queueTable, 'updateQueueDiff').mockResolvedValue();
 
+        const response = await request(app).get(`/api/nextClient/${counterId}`);
+
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual(ticketData);
     });
 
     test('Should throw a 503 error if a database problem occurs', async () => {
