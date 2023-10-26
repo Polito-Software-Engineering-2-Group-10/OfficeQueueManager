@@ -24,7 +24,7 @@ function OfficerPage(props){
     function getNextClient(){
         API.getNextClient(selectedCounter)
         .then((c) => setCurrentClient(c))
-        .catch((err) => console.log(err));
+        .catch((err) => { console.log(err); setCurrentClient(''); });
     }
 
     return(
@@ -57,7 +57,7 @@ function OfficerPage(props){
                     </Dropdown>
                 </Col>
                 <Col>
-                    Current client is: {currentClient}<br/>
+                    {currentClient === '' ? 'No client currently to serve' : `Current client is: ${currentClient}`}<br/>
                     <Button style={{marginTop: '20px'}} onClick={getNextClient}>Call Next Client</Button>
                 </Col>
                 <Col>
