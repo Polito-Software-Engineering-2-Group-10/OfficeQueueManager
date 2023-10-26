@@ -1,7 +1,6 @@
 import request from 'supertest';
-import { server, app, psqlDriver, getWaitingTime } from './index.js';
+import { server, app, psqlDriver, getWaitingTime, serviceTypeTable, queueTable, counterTable, ticketTable } from './index.js';
 import { jest } from '@jest/globals';
-import { ServiceTypeTable, CounterTable, TicketTable, QueueTable } from './dbentities.js';
 
 /// Unit test here
 
@@ -12,17 +11,22 @@ afterAll(async () => {
 
 describe('get api/services', () => {
     test("Should retrieve a list of services", async () => {
-        const retrievedServices = [{description: "Save", name: "A"}, {description: "Loan", name: "B"},
-            {description: "Transfer", name: "C"}, {description: "Remittance", name: "D"},
-            {description: "Investment", name: "E"}, {description: "Stock", name: "F"}];
-        jest.spyOn(new ServiceTypeTable, "getAllServices").mockImplementationOnce(() => {});
+        const retrievedServices = [{ description: "Save", name: "A" }, { description: "Loan", name: "B" },
+        { description: "Transfer", name: "C" }, { description: "Remittance", name: "D" },
+        { description: "Investment", name: "E" }, { description: "Stock", name: "F" }];
+        jest.spyOn(serviceTypeTable, "getAllServices").mockImplementationOnce(() => retrievedServices.map(item => {
+            return {
+                typeid: item.name,
+                typename: item.description
+            };
+        }));
         const response = await request(app).get("/api/services");
         expect(response.status).toBe(200);
         expect(response.body).toEqual(retrievedServices);
     });
 
-    test("Should throw a 503 error if a server-side error occurs", async() => {
-        jest.spyOn(ServiceTypeTable.prototype, "getAllServices").mockImplementationOnce(() => {
+    test("Should throw a 503 error if a server-side error occurs", async () => {
+        jest.spyOn(serviceTypeTable, "getAllServices").mockImplementationOnce(() => {
             throw new Error();
         });
         const response = await request(app).get("/api/services");
@@ -61,11 +65,11 @@ describe('post /api/receiveTicketNumber/:typeid', () => {
 
 describe('get /api/getWaitingTime/:ticketid', () => {
     test('Should calculate waiting time correctly', async () => {
-        jest.spyOn(new ServiceTypeTable, 'getServiceTypeById').mockResolvedValue();
-        jest.spyOn(new TicketTable, 'getTicketsByType').mockResolvedValue();
-        jest.spyOn(new CounterTable, 'getCountersByType').mockResolvedValue();
-        const result = await getWaitingTime('D06');
-        expect(result).toEqual({ minutes: 15, seconds: 0 });
+        jest.spyOn(serviceTypeTable, 'getServiceTypeById').mockResolvedValue({ servicetime: 300 });
+        jest.spyOn(ticketTable, 'getTicketsByType').mockResolvedValue([{ ticketid: 'D0' }, { ticketid: 'D1' }]);
+        jest.spyOn(counterTable, 'getCountersByType').mockResolvedValue([{ counterid: '01', typeamount: 2 }]);
+        const result = await getWaitingTime('D1');
+        expect(result).toEqual({ minutes: 12, seconds: 30 });
     });
 });
 
@@ -73,11 +77,11 @@ describe('get /api/UsersBefore/:ticketid', () => {
     test("Should retrieve the number of users before the specified one", async () => {
         const typeId = 'A01';
         const ticketData = [
-        { ticketid: 'A1' },
-        { ticketid: 'A2' },
+            { ticketid: 'A1' },
+            { ticketid: 'A2' },
         ];
 
-        jest.spyOn(new TicketTable, 'getTicketsByType').mockResolvedValue(ticketData);
+        jest.spyOn(ticketTable, 'getTicketsByType').mockResolvedValue(ticketData);
 
         const response = await request(app).get(`/api/UsersBefore/${typeId}`);
 
@@ -88,16 +92,16 @@ describe('get /api/UsersBefore/:ticketid', () => {
 
 describe('get /api/counters/', () => {
     test("Should retrieve a list of all counters with relative services", async () => {
-        const retrievedCounters = [{counterid: "01", typeamount: 3, typeids: ["A", "B", "C"]},
-            {counterid: "02", typeamount: 2, typeids: ["C", "D"]}, {counterid: "03", typeamount: 2, typeids: ["E", "F"]},
-            {counterid: "04", typeamount: 1, typeids: ["E"]}, {counterid: "05", typeamount: 4, typeids: ["A", "B", "C", "D"]}];
-        jest.spyOn(new CounterTable, "getAllCounters").mockImplementationOnce(() => { return retrievedCounters });
+        const retrievedCounters = [{ counterid: "01", typeamount: 3, typeids: ["A", "B", "C"] },
+        { counterid: "02", typeamount: 2, typeids: ["C", "D"] }, { counterid: "03", typeamount: 2, typeids: ["E", "F"] },
+        { counterid: "04", typeamount: 1, typeids: ["E"] }, { counterid: "05", typeamount: 4, typeids: ["A", "B", "C", "D"] }];
+        jest.spyOn(counterTable, "getAllCounters").mockImplementationOnce(() => { return retrievedCounters });
         const response = await request(app).get("/api/counters/");
         expect(response.body).toEqual(retrievedCounters);
     })
 
-    test("Should throw a 503 error if a server-side error occurs", async() => {
-        jest.spyOn(CounterTable.prototype, "getAllCounters").mockImplementationOnce(() => {
+    test("Should throw a 503 error if a server-side error occurs", async () => {
+        jest.spyOn(counterTable, "getAllCounters").mockImplementationOnce(() => {
             throw new Error();
         });
         const response = await request(app).get("/api/counters");
@@ -109,13 +113,15 @@ describe('get /api/counters/', () => {
 describe('get /api/counterService/:counterid', () => {
     test("Should retrieve a list of all services provided by a specific counter", async () => {
         const ServicesByCounter = ["A", "B", "C"]
-        jest.spyOn(new CounterTable, "getCounterById").mockImplementationOnce(() => { return ServicesByCounter });
+        jest.spyOn(counterTable, "getCounterById").mockImplementationOnce(() => {
+            return { counterid: "01", typeamount: 3, typeids: ServicesByCounter };
+        });
         const response = await request(app).get("/api/counterService/01");
         expect(response.body).toEqual(ServicesByCounter);
     })
 
-    test("Should throw a 503 error if a server-side error occurs", async() => {
-        jest.spyOn(CounterTable.prototype, "getCounterById").mockImplementationOnce(() => {
+    test("Should throw a 503 error if a server-side error occurs", async () => {
+        jest.spyOn(counterTable, "getCounterById").mockImplementationOnce(() => {
             throw new Error();
         });
         const response = await request(app).get("/api/counterService/01");
@@ -132,7 +138,7 @@ describe('get /api/counter/:counterid', () => {
             typeamount: 3,
             typeids: ['A', 'B', 'C']
         };
-        jest.spyOn(new CounterTable, 'getCounterById').mockImplementationOnce(() => counterData);
+        jest.spyOn(counterTable, 'getCounterById').mockImplementationOnce(() => counterData);
         const response = await request(app).get(`/api/counter/${counterId}`);
         expect(response.status).toBe(200);
         expect(response.body).toEqual(counterData);
@@ -140,7 +146,7 @@ describe('get /api/counter/:counterid', () => {
 
     test('Should throw a 503 error if a database error occurs', async () => {
         const counterId = 'invalid_id';
-        jest.spyOn(new CounterTable, 'getCounterById').mockImplementationOnce(() => {
+        jest.spyOn(counterTable, 'getCounterById').mockImplementationOnce(() => {
             throw new Error();
         });
         const response = await request(app).get(`/api/counter/${counterId}`);
@@ -156,9 +162,9 @@ describe('get /api/nextClient/:counterid', () => {
 
     test('Should throw a 503 error if a database problem occurs', async () => {
         const counterId = '01';
-        jest.spyOn(new CounterTable, 'getCounterById').mockRejectedValue(new Error());
+        jest.spyOn(counterTable, 'getCounterById').mockRejectedValue(new Error());
         const response = await request(app).get(`/api/nextClient/${counterId}`);
         expect(response.status).toBe(503)
-        expect(response.body).toEqual({error: 'Database error during retrieving next client Error'})
+        expect(response.body).toEqual({ error: 'Database error during retrieving next client Error' })
     });
 });

@@ -56,7 +56,7 @@ async function getWaitingTime(ticketid) {
         ki += (1 / counter.typeamount);
     }
     const time = (tr * (nr / ki + 0.5));
-    const minutes = time / 60;
+    const minutes = Math.floor(time / 60);
     const seconds = time % 60;
     return { minutes: minutes, seconds: seconds };
 }
@@ -192,4 +192,4 @@ const server = app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
 });
 
-export { server, app, psqlDriver, getWaitingTime };
+export { server, app, psqlDriver, getWaitingTime, serviceTypeTable, counterTable, ticketTable, queueTable };
