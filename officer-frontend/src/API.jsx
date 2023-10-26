@@ -9,14 +9,32 @@ async function getAllCounters(){
         throw counters;
 }
 
-async function getServicesByCounter(counterId){
-    const response = await fetch(URL+`/counterService/${counterId}`);
+async function getAllServices(){
+    const response = await fetch(URL+'/services');
     const services = await response.json();
     if(response.ok)
-        return services.map((s) => ({typeid: s.typeid, typename: s.typename, servicetime: s.servicetime}));
+        return services.map((s) => ({name: s.name, description: s.description}));
     else
         throw services;
 }
 
-const API = {getAllCounters, getServicesByCounter};
+async function getServicesByCounter(counterId){
+    const response = await fetch(URL+`/counterService/${counterId}`);
+    const services = await response.json();
+    if(response.ok)
+        return services.map((s) => ({typeid: s}));
+    else
+        throw services;
+}
+
+async function getNextClient(counterId){
+    const response = await fetch(URL+`/nextClient/${counterId}`);
+    const client = await response.json();
+    if(response.ok)
+        return client.map((c) => ({ticketid: c.ticketid}));
+    else
+        throw client;
+}
+
+const API = {getAllCounters, getServicesByCounter, getAllServices, getNextClient};
 export default API;

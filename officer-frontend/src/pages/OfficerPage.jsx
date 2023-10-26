@@ -5,20 +5,27 @@ import API from '../API';
 function OfficerPage(props){
 
     const counters = props.counters;
+    const services = props.services;
     const [selectedCounter, setSelectedCounter] = useState('01');
-    const [services, setServices] = useState([]);
+    const [selectedServices, setSelectedServices] = useState([]);
+    const [currentClient, setCurrentClient] = useState('');
 
     useEffect(() => {
+        if (services.length === 0) return;
         API.getServicesByCounter(selectedCounter)
-        .then((services) => {
-            setServices(services);
+        .then((selectedServices) => {
+            let sr = selectedServices.map((s) => s.typeid);
+            const newList = services.filter((s) => sr.includes(s.name));
+            setSelectedServices(newList);
         })
         .catch((err) => console.log(err));
-    }, [selectedCounter]);
+    }, [selectedCounter, services.length]);
 
-    /*const changeCounter=(event)=>{
-        setSelectedCounter(event.target.value);
-    }*/
+    function getNextClient(){
+        API.getNextClient(selectedCounter)
+        .then((c) => setCurrentClient(c))
+        .catch((err) => console.log(err));
+    }
 
     return(
         <Container fluid style={{padding: 0, textAlign: 'center'}}>
@@ -29,15 +36,16 @@ function OfficerPage(props){
             </Row>
             <Row style={{marginTop: '30px'}}>
                 <Col>
-                    <Dropdown>
+                    Current counter selected is {selectedCounter}
+                    <Dropdown onSelect={(e) => setSelectedCounter(e)}>
                         <Dropdown.Toggle>
-                            Select the counter
+                            Select another counter
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                         {
                             counters.map((c) => {
                                 return (
-                                    <Dropdown.Item key={c.counterid} value={c.counterId} onSelect={() => setSelectedCounter(c.counterId)}>Counter N.{c.counterid}</Dropdown.Item>
+                                    <Dropdown.Item key={c.counterid} eventKey={c.counterid}>Counter N.{c.counterid}</Dropdown.Item>
                                 )
                             })
                         }
@@ -45,16 +53,16 @@ function OfficerPage(props){
                     </Dropdown>
                 </Col>
                 <Col>
-                    Current client is: #ticketID<br/>
-                    <Button style={{marginTop: '20px'}}>Call Next Client</Button>
+                    Current client is: {currentClient}<br/>
+                    <Button style={{marginTop: '20px'}} onClick={getNextClient}>Call Next Client</Button>
                 </Col>
                 <Col>
                     The services that this counter can manage are:
                     <ListGroup>
                         {
-                            services.map((s) => {
+                            selectedServices.map((s) => {
                                 return (
-                                    <ListGroup.Item key={s.typeid}>{s.typename}</ListGroup.Item>
+                                    <ListGroup.Item key={s.name}>{s.description}</ListGroup.Item>
                                 )
                             })
                         }

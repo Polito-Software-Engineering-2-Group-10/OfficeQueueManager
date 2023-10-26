@@ -10,6 +10,7 @@ function App() {
 
   //list of all counters to display in the dropdown list
   const [counters, setCounters] = useState([]);
+  const [services, setServices] = useState([]);
 
   useEffect( () => {
     API.getAllCounters()
@@ -19,11 +20,19 @@ function App() {
       .catch((err) => console.log(err));
   }, []);
 
+  useEffect(() => {
+    API.getAllServices()
+    .then((services) => {
+        setServices(services);
+    })
+    .catch((err) => console.log(err));
+}, []);
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/*' element={<OfficerPage counters={counters}/>}></Route>
-        <Route path='/officer' element={<OfficerPage counters={counters}/>}></Route>
+        <Route path='/*' element={<OfficerPage counters={counters} services={services}/>}></Route>
+        <Route path='/officer' element={<OfficerPage counters={counters} services={services}/>}></Route>
       </Routes>
     </BrowserRouter>
   )
