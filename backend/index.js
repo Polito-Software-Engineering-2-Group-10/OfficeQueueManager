@@ -171,19 +171,25 @@ app.get('/api/nextClient/:counterid',
         try {
             const counter = await counterTable.getCounterById(req.params.counterid);
             const queues = await queueTable.getQueuesByType(counter.typeids);
-            const longestQueues = queues.sort((a, b) => b.queuelength - a.queuelength);
+            let longestQueues = queues.sort((a, b) => b.queuelength - a.queuelength);
+            longestQueues = longestQueues.filter(queue => queue.queuelength === longestQueues[0].queuelength);
             if (longestQueues.length === 1) {
                 const longestQueue = longestQueues[0];
                 const ticket = await ticketTable.extractFirstTicket(longestQueue.typeid);
                 await queueTable.updateQueueDiff(longestQueue.queueid, -1);
                 res.json(ticket);
             } else {
-                const serviceTypes = (await serviceTypeTable.getAllServices()).filter(service => counter.typeids.includes(service.typeid)).sort((a, b) => a.servicetime - b.servicetime);
+                const queueTypeIds = longestQueues.map(queue => queue.typeid);
+                const serviceTypes = (await serviceTypeTable.getAllServices()).filter(service => queueTypeIds.includes(service.typeid)).sort((a, b) => a.servicetime - b.servicetime);
                 const serviceType = serviceTypes[0];
-                const longestQueue = longestQueues.filter(queue => queue.queuelength === longestQueues[0].queuelength && queue.typeid === serviceType.typeid)[0];
-                const ticket = await ticketTable.extractFirstTicket(longestQueue.typeid);
-                await queueTable.updateQueueDiff(longestQueue.queueid, -1);
-                res.json(ticket);
+                const longestQueue = longestQueues.filter(queue => queue.typeid === serviceType.typeid)[0];
+                try {
+                    const ticket = await ticketTable.extractFirstTicket(longestQueue.typeid);
+                    await queueTable.updateQueueDiff(longestQueue.queueid, -1);
+                    res.json(ticket);
+                } catch (err) {
+                    res.status(404).json({ error: `No ticket found for type counter ${req.params.counterid}` });
+                }
             }
         } catch (err) {
             res.status(503).json({ error: `Database error during retrieving next client ${err}` });
