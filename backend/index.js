@@ -192,4 +192,4 @@ const server = app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
 });
 
-export { server, app, psqlDriver };
+export { server, app, psqlDriver, getWaitingTime };
