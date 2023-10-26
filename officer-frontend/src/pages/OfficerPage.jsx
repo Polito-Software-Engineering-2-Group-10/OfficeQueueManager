@@ -37,7 +37,11 @@ function OfficerPage(props){
             <Row style={{marginTop: '30px'}}>
                 <Col>
                     Current counter selected is {selectedCounter}
-                    <Dropdown onSelect={(e) => setSelectedCounter(e)}>
+                    <Dropdown onSelect={(e) => {
+                        setSelectedCounter(e);
+                        setCurrentClient('');
+                        }
+                        }>
                         <Dropdown.Toggle>
                             Select another counter
                         </Dropdown.Toggle>

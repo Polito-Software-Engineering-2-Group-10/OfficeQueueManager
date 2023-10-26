@@ -31,7 +31,7 @@ async function getNextClient(counterId){
     const response = await fetch(URL+`/nextClient/${counterId}`);
     const client = await response.json();
     if(response.ok)
-        return client.map((c) => ({ticketid: c.ticketid}));
+        return client.ticketid;
     else
         throw client;
 }
