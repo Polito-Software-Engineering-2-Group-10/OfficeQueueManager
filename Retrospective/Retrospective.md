@@ -83,7 +83,7 @@ sections:
 
 - What caused your errors in estimation (if any)?
 
-   The sprint planning took a lot more time it should have, mostly because this was our first time doing it and wee needed to get familiar with the tools, and how to split stories into tasks and divide them nicely between team members.
+   The sprint planning took a lot more time it should have, mostly because this was our first time doing it and we needed to get familiar with the tools, and how to split stories into tasks and divide them nicely between team members.
    
    Getting familiar with the new tools we have to use for this workshop caused us to lose some hours, especially in the beginning.
    
@@ -94,7 +94,7 @@ sections:
   - The positive aspect of this sprint we think is that we have learnt how to manage our hours, to see in every moment how much time we spend on a task is very useful, made us more focused on the work we have to do and where to concentrate the hours we had to put in this sprint.
   - When joining a new team, how to be familiar with new team members and how to collaborate.
   - Consider how much familiar you are with a technology before using it for a correct estimation.
-  - How much important is team coordination and communication in order to work efficiently.
+  - Understand the importance of coordination and communication for a team in order to work efficiently together.
 
   **Negative**
   - Considering that we have to work in "separate department", for getting a task done the previous work has to be done, so coordinating between the teams member is very important.
