@@ -57,7 +57,7 @@ sections:
 > place technical tasks corresponding to story `#0` and leave out story points (not applicable in this case)
 
 - Hours per task average, standard deviation (estimate and actual): 
-  - Average: estimate: 55 / 18 = **2h16m**, actual: 58h39m / 18 = **3h06m**, 
+  - Average: estimate: 55 / 18 = **3h03m**, actual: 58h39m / 18 = **3h15m**, 
   - Standard eviation estimate: **3h06m**, Standard eviation actual: **2h16m**
 - Total task estimation error ratio: sum of total hours estimation / sum of total hours spent - 1:
   - 55/58.5 - 1 = 0,94017094 - 1 = **−0,05982906** 
