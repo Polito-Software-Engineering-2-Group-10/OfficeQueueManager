@@ -9,6 +9,15 @@ jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: officequeuemanager
+          POSTGRES_PASSWORD: officequeuemanager
+          POSTGRES_DB: officequeuemanager
+        ports:
+          - 5432:5432
     steps:
       - uses: actions/checkout@v3
         with:
