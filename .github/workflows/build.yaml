@@ -13,12 +13,18 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Setup nodejs
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+      - name: Install dependencies
+        working-directory: ${{ github.workspace }}/backend
+        run: npm install
+      - name: Run coverage
+        working-directory: ${{ github.workspace }}/backend
+        run: npm run test
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args:
-            -Dsonar.projectKey=Polito-Software-Engineering-2-Group-10_OfficeQueueManager
-            -Dsonar.organization=polito-software-engineering-2-group-10
